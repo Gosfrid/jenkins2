@@ -19,9 +19,13 @@ pipeline {
         stage('SSH') {
             steps {
                 sh '''
-                    ssh -o StrictHostKeyChecking=no -i /home/jenkins/.ssh/training.pem ubuntu@10.1.1.10
-                    touch /home/ubuntu/readme
-                    echo "Hello World" > /home/ubuntu/readme
+                   #!/bin/bash
+                   ssh -i /home/jenkins/.ssh/training.pem -o StrictHostKeyChecking=no ubuntu@10.1.1.10 << EOF
+                   sudo apt install nginx -y
+                   touch readme
+                   echo "Hello World - Success!" > readme
+                   cat readme
+                   << EOF
                 '''
             }
         }
