@@ -1,0 +1,36 @@
+- hosts: localhost
+  become: yes
+  tasks:
+    - name: Create a directory if it does not exist
+      ansible.builtin.file:
+        path: /home/ubuntu/BirthDateFlaskApp
+        state: directory
+        mode: '0755'
+    - name: Clone a repo with separate git directory
+      ansible.builtin.git:
+        repo: https://github.com/nathanforester/BirthDateAppFlask.git
+        dest: /home/ubuntu/BirthDateFlaskApp/
+    - name: create app.service file
+      shell: touch /etc/systemd/system/app.service
+    - name: write to app.service file
+      ansible.builtin.blockinfile:
+        path: /etc/systemd/system/app.service
+        block: |
+          [Unit]
+          Description=My test service
+          After=multi-user.target
+          [Service]
+          Type=simple
+          Restart=always
+          ExecStart=/usr/bin/python3 /home/ubuntu/BirthDateFlaskApp/app.py
+          [Install]
+          WantedBy=multi-user.target
+    - name: Install python pip
+      ansible.builtin.apt:
+        name: python3-pip
+    - name: Install multi python packages
+      ansible.builtin.pip:
+        name:
+          - Flask
+    - name: reload daemon
+      shell: sudo systemctl daemon-reload
