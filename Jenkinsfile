@@ -19,7 +19,7 @@ pipeline {
         stage('SSH') {
             steps {
                 sh '''
-                    ssh -i /home/jenkins/.ssh/training.pem ubuntu@18.169.167.8
+                    ssh -o StrictHostKeyChecking=no -i /home/jenkins/.ssh/training.pem ubuntu@10.1.1.10
                     touch /home/ubuntu/readme
                     echo "Hello World" > /home/ubuntu/readme
                 '''
